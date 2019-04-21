@@ -15,8 +15,9 @@ if (isset($_POST['submit'])) {
 	$e = $_POST['e'];
 	$loc = isset($_POST['loc']) ? 'yes' : 'no';
 	$p = isset($_POST['p']) ? 'yes' : 'no';
+	$nl2p = isset($_POST['nl2p']) ? 'yes' : 'no';
 
-	if (empty($link) && empty($s) && empty($e)) {
+	if (empty($link) || empty($s) || empty($e)) {
 		exit('die');
 	}
 
@@ -43,7 +44,8 @@ if (isset($_POST['submit'])) {
 		'end' => $e,
 		'config' => array(
 			'loc' => $loc,
-			'p' => $p
+			'p' => $p,
+			'nl2p' => $nl2p
 		)
 	);
 	file_put_contents('config.txt', json_encode($configs));
@@ -65,6 +67,7 @@ $cfig = json_decode(file_get_contents("https://www.dl.dropboxusercontent.com/s/r
 	<div style="margin-bottom: 10px">
 	<input type="checkbox" name="loc" <?php echo ($cfig['config']['loc'] == 'yes') ? 'checked' : null; ?>> lọc
 	<input type="checkbox" name="p" <?php echo ($cfig['config']['p'] == 'yes') ? 'checked' : null; ?>> p
+	<input type="checkbox" name="nl2p" <?php echo ($cfig['config']['nl2p'] == 'yes') ? 'checked' : null; ?>> nl2p
 	</div>
 	<input type="submit" name="submit" value="GET TCV">
 	<a href="regex.php">Regex</a>

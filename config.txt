@@ -1,1 +1,1 @@
-{"link":"https:\/\/truyencv.com\/chu-gioi-tan-the-online\/","start":"5","end":"10","config":{"loc":"yes","p":"yes"}}
+{"link":"https:\/\/truyencv.com\/than-thu-tu-tien\/","start":"1","end":"2","config":{"loc":"yes","p":"no","nl2p":"yes"}}

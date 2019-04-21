@@ -1,5 +1,6 @@
 <?php
 
+include('functions.php');
 include('simple_html_dom.php');
 
 $cfig = json_decode(file_get_contents('config.txt'), true);
@@ -17,6 +18,19 @@ $tieude = $html->find('h2.title', 0)->plaintext;
 
 $raw = $html->find('div#js-truyencv-content', 0);
 $noidung = remove($raw, 'iframe, script, style, a, div, ' . $p . '');
+$noidung = str_replace("<p>&nbsp;</p>", "", $noidung);
+
+// nl2p
+if ($cfig['config']['nl2p'] == 'yes') {
+	$noidung = strip_tags($noidung, '<br><p>');
+	$noidung = preg_replace('/((<br\s*\/?>|<\/?p>)\s*)+/', "\n", $noidung);
+	$noidung = nl2p($noidung);
+}
+
+// loc
+if ($cfig['config']['loc'] == 'yes') {
+	$noidung = loc($noidung);
+}
 
 foreach ($data as $value) {
 	if ($value['flag'] == 'g') {
@@ -34,10 +48,6 @@ foreach ($data as $value) {
 	}
 }
 
-if ($cfig['config']['loc'] == 'yes') {
-	$noidung = loc($noidung);
-}
-
 echo "$tieude<br>➥<br>➥<br><br>$noidung<br>⊙⊙";
 
 function remove($nguon, $xoa) {
@@ -45,33 +55,4 @@ function remove($nguon, $xoa) {
 		$node->outertext = '';
 	}
 	return $nguon->innertext;
-}
-
-function loc($word)
-{
-	$word = preg_replace('/(\W)ria(\W)/i', '$1dia$2', $word);
-	$word = preg_replace('/(\W)sum(\W)/i', '$1xum$2', $word);
-	$word = preg_replace('/(\W)boa(\W)/i', '$1bo$2', $word);
-	$word = preg_replace('/(\W)mu([^A-ZẮẰẲẴẶĂẤẦẨẪẬÂÁÀÃẢẠĐẾỀỂỄỆÊÉÈẺẼẸÍÌỈĨỊỐỒỔỖỘÔỚỜỞỠỢƠÓÒÕỎỌỨỪỬỮỰƯÚÙỦŨỤÝỲỶỸỴ])/i', '$1mư$2', $word);
-	$word = preg_replace('/(\W)go(\W)/i', '$1gô$2', $word);
-	$word = preg_replace('/(\W)ah(\W)/i', '$1a$2', $word);
-	$word = preg_replace('/(\W)uh(\W)/i', '$1ư$2', $word);
-	$word = preg_replace('/cmnd/i', 'chứng minh nhân dân', $word);
-	$word = preg_replace(array('/đkm/i', '/dkm/i', '/đcm/i', '/dcm/i', '/cmn/i'), 'con mẹ nó', $word);
-	$word = preg_replace('/([^A-Z])cm(\W)/i', '$1xen-ti-mét$2', $word);
-	$word = preg_replace('/([^A-Z])km(\W)/i', '$1ki-lô-mét$2', $word);
-	$word = preg_replace('/([^A-Z])kg(\W)/i', '$1ki-lô-gam$2', $word);
-	$word = preg_replace('/…/', '...', $word);
-	$word = preg_replace('/\.(?:\s*\.)+/', '... ', $word);
-	$word = preg_replace('/,(?:\s*,)+/', ',', $word);
-	$word = str_replace(array('&quot;', '&lsquo;', '&rsquo;', '&ldquo;', '&rdquo;'), '"', $word);
-	$word = str_replace('"..."', '"Lặng!"', $word);
-	$word = preg_replace('/_/', '-', $word);
-	$word = preg_replace('/-+/', '-', $word);
-	$word = preg_replace('/-*o\s*0\s*o-*/', '...', $word);
-	$word = preg_replace('/~/', ' ', $word);
-	$word = preg_replace('/\*/', '', $word);
-	$word = preg_replace('/ (\.|\?|!|,)/', '$1', $word);
-	$word = preg_replace('/(\d{1,2}),(\d{3})/', '$1$2', $word);
-	return $word;
 }
