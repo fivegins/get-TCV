@@ -1,0 +1,1 @@
+[{"search":"Sin ch\u00e0o","replace":"Xin ch\u00e0o","flag":"g"}]
